@@ -1,64 +1,54 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Expenses.css'
+import LoadingSpinner from '../UI/LoadingSpinner'
 import Card from '../UI/Card'
 import ExpensesFilter from './ExpensesFilter'
 import ExpensesList from './ExpensesList'
 import ExpensesChart from './ExpensesChart'
-class Expenses extends Component {
-	constructor() {
-		super()
-		this.state = {
-			filteredYear: '2022',
-		}
+import { Route, useParams } from 'react-router-dom'
+import useHttp from '../../hooks/UseHttp'
+import Comment from '../comments/Comment'
+import { getAllData } from '../../api/ExpenseService'
+function Expenses(props) {
+	
+	
+	const [filteredYear, setFilteredYear] = useState('2022')
+	const filterChangeHandler = (selectedYear) => {
+		setFilteredYear(selectedYear)
 	}
-	filterChangeHandler = (selectedYear) => {
-		this.state({ filteredYear: selectedYear })
-	}
+	const { sendRequest, status, data, error } = useHttp(getAllData, true)
 
-	// let expenseContent = <p style={{ textAlign: 'center' , color:"white"}}>no expense Found</p>
-	// if (filteredExpenses.length > 0) {
-	// 	expenseContent = filteredExpenses.map((el) => (
-	// 		<ExpenseItem
-	// 			key={el.id}
-	// 			date={el.date}
-	// 			text={el.title}
-	// 			price={el.amount}
-	// 		/>
-	// 	))
-	// }
-	render() {
-		const filteredExpenses = this.props.expenses.filter((expense) => {
-			return (
-				expense.date.getFullYear().toString() ===
-				this.state.filteredYear
-			)
-		})
+	useEffect(() => {
+		sendRequest()
+	}, [])
+	if (status === 'pending') {
 		return (
-			<Card className='expenses'>
-				<ExpensesFilter
-					filteredYear={this.state.filteredYear}
-					onChangeFilter={this.filterChangeHandler}
-				/>
-				<ExpensesChart expenses={filteredExpenses} />
-				{/* {expenseContent} */}
-				<ExpensesList expenses={filteredExpenses} />
-				{/* {filteredExpenses.length === 0 ? (
-				<p>no expense Found.</p>
-			) : (
-				filteredExpenses.map((el) => {
-					return (
-						<ExpenseItem
-							key={el.id}
-							date={el.date}
-							text={el.title}
-							price={el.amount}
-						/>
-					)
-				})
-			)} */}
-			</Card>
+			<div className='centered'>
+				<LoadingSpinner />
+			</div>
 		)
 	}
+
+	const filteredExpenses = data.filter((expense) => {
+		return expense.date.getFullYear().toString() === filteredYear
+	})
+	return (
+		<Card className='expenses'>
+			<Route path='/chart-bar'>
+				<ExpensesChart expenses={filteredExpenses} />
+			</Route>
+			<Route path='/new-list' exact>
+				<ExpensesFilter
+					filteredYear={filteredYear}
+					onChangeFilter={filterChangeHandler}
+				/>
+				<ExpensesList expenses={filteredExpenses} />
+			</Route>
+			<Route path='/new-list/:commentId' exact>
+				<Comment/>
+			</Route>
+		</Card>
+	)
 }
 
 export default Expenses

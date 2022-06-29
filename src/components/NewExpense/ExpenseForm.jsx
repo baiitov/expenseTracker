@@ -28,6 +28,10 @@ class ExpenseForm extends Component {
 			amount:this.state.enteredAmount,
 			date: new Date(this.state.enteredDate),
 		}
+		this.setState({enteredAmount: ''})
+		this.setState({enteredTitle: ''})
+		this.setState({enteredDate: ''})
+
 		this.props.onAddData(expenseData)
 	}
 	render() {

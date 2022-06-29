@@ -4,7 +4,8 @@
     align-items: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     padding: 0.5rem;
-    margin: 1rem 0;
+    margin: 1rem;
+    
     border-radius: 12px;
     background-color: #4B4B4B;
   }
@@ -47,4 +48,21 @@
       font-size: 1.25rem;
       padding: 0.5rem 1.5rem;
     }
+}
+
+
+.btn {
+  text-decoration: none;
+  background-color: #40005D;
+  color: white;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #40005D;
+  cursor: pointer;
+}
+
+.btn:hover,
+.btn:active {
+  background-color: #40005D;
+  background-color: #40005D;
 }

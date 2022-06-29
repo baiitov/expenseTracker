@@ -16,6 +16,7 @@ class ExpensesList extends Component {
 				{this.props.expenses.map((el) => (
 					<ExpenseItem
 						key={el.id}
+						id={el.id}
 						date={el.date}
 						text={el.title}
 						price={el.amount}

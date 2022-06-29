@@ -1,21 +1,32 @@
 import React, { Component, useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { addNewData } from '../../api/ExpenseService'
+import useHttp from '../../hooks/UseHttp'
+import LoadingSpinner from '../UI/LoadingSpinner'
 import ExpenseForm from './ExpenseForm'
 import './NewExpense.css'
-class NewExpense extends Component  {
-	AddData = (data)=>{
-      const objectWithId ={
-		  ...data,
-			id: Math.random().toString(),
-		  
-	  }
-	  this.props.onAddDataToArray(objectWithId)
+function NewExpense() {
+	const { sendRequest, data, error, status } = useHttp(addNewData)
+	const history = useHistory()
+	const AddData = (data) => {
+		sendRequest(data)
 	}
-	render(){return (
+	if (status === 'pending') {
+		return (
+			<div>
+				<LoadingSpinner />
+			</div>
+		)
+	}
+	if (status === 'completed') {
+		history.push('/new-list')
+	}
+
+	return (
 		<div className='new-expense'>
-			<ExpenseForm onAddData={this.AddData}/>
+			<ExpenseForm onAddData={AddData} />
 		</div>
 	)
-	}
 }
 
 export default NewExpense
